@@ -1,0 +1,32 @@
+{% extends "layout.html" %} {% block content %}
+<div class="home">
+  <h2>Detect hate speech with BERT</h2>
+  <div class="center">
+    <label for="input_text">Type your text ...</label>
+    <form action="/predict_bert" method="POST">
+      <textarea rows="5" cols="60" name="input_text" placeholder="Please enter your text to be analyzed here...">{{ input_text }}</textarea>
+      <br>
+      <p><input type="submit" value="submit" /></p>
+    </form>
+  </div>
+  {% if pred is defined %}
+
+  <h3>Predicted response:</h3>
+  <table id="classifier">
+    <tr>
+      <th style="width:50%">Classifier</th>
+      <th style="width:25%">Prediction</th>
+      <th>Confidence of Prediction</th>
+    </tr>
+    {% for key, value in pred.items() %}
+    <tr>
+      <td> {{ key }} </td>
+      <td> {{ value }} </td>
+      <td> {{ probability[key] }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  {% endif %}
+</div>
+{% endblock %}
