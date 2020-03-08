@@ -20,8 +20,8 @@ from preprocess import remove_stopwords
 class BertModel:
     def __init__(self):
         self.session = tf.compat.v1.Session()
-        self.graph = tf.compat.v1.get_default_graph() # tf.get_default_graph()
-        self.model = None #self.loadmodel(path)
+        self.graph = tf.compat.v1.get_default_graph() 
+        self.model = None 
         # for some reason in a flask app the graph/session needs to be used in the init else it hangs on other threads
         with self.graph.as_default():
             with self.session.as_default():
@@ -74,7 +74,7 @@ def predict_sentence():
             dt_response['predictions'] = dt_preds
             dt_response['probabilities'] = dt_probas
             ###
-            # now return the original text and all the predictions
+            # now return all the predictions
             ###
             return jsonify(dt_response)
         except:
@@ -118,23 +118,23 @@ def predict_text(value):
     # clean strings
     prepro = clean(value)
     if debug == True:
-        print("clean() done:\n{}\n\n ".format(value))
-        logging.debug("clean() done:\n%s\n\n ", value)
+        print("clean() done:\n{}\n\n ".format(prepro))
+        logging.debug("clean() done:\n%s\n\n ", prepro)
     # remove punctuation
-    no_sign = remove_signs(prepro)
+    prepro = remove_signs(prepro)
     if debug == True:
-        print("remove_signs() done:\n{}\n\n ".format(no_sign))
-        logging.debug("remove_signs() done:\n%s\n\n ", no_sign)
+        print("remove_signs() done:\n{}\n\n ".format(prepro))
+        logging.debug("remove_signs() done:\n%s\n\n ", prepro)
     # lemmatize the text
-    lemm_dome = lemm(no_sign)
-    if debug == True:
-        print("lemm() done:\n{}\n\n".format(lemm_dome))
-        logging.debug("lemm() done:\n%s\n\n", lemm_dome)
+    #prepro = lemm(prepro)
+    #if debug == True:
+    #    print("lemm() done:\n{}\n\n".format(prepro))
+    #    logging.debug("lemm() done:\n%s\n\n", prepro)
     # remove stop words
-    no_stop = remove_stopwords(lemm_dome)
-    if debug == True:
-        print("remove_stopwords() done:\n{}\n\n".format(no_stop))
-        logging.debug("remove_stopwords() done:\n%s\n\n", no_stop)
+    #prepro = remove_stopwords(prepro)
+    #if debug == True:
+    #    print("remove_stopwords() done:\n{}\n\n".format(prepro))
+    #    logging.debug("remove_stopwords() done:\n%s\n\n", prepro)
     # preprocessing finished
 
     ####
@@ -146,7 +146,7 @@ def predict_text(value):
             #print("predicting with model name: {} and model: {}".format(mod_name, model))
             logging.debug("predicting with model: %s", mod_name)
 
-        proba = model.predict_proba(no_stop)
+        proba = model.predict_proba(prepro)
 
         if proba[0] >= 0.5:
             pred = 'not abusive'
