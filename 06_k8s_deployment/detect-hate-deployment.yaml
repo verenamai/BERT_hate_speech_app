@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: detect-hate-bert
+  labels:
+    app: detect-hate-bert
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: detect-hate-bert
+  template:
+    metadata:
+      labels:
+        app: detect-hate-bert
+    spec:
+      containers:
+      - name: detect-hate-bert-container
+        image: meierale/detect-hate-bert:tf_1.15
+        command: ["python", "api.py"]
+        args: ["-d", "False", "-p", "12346"]
+        ports:
+        - containerPort: 12346
+      restartPolicy: Always
